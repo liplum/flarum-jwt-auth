@@ -17,11 +17,7 @@ liplum-jwt-auth:
                 How many additional seconds past JWT expiration should the session still start.
                 This value is only intended to be a few minutes at worst to account for clock skew times between servers.
                 However it can also be set to a much longer value if this is the only way to work around fixed short lifetimes of JWT from an external library.
-            usernameTemplate: Username Template
-            usernameTemplateHelp: Use <code>{sub}</code> syntax to use an attribute from the JWT
-            emailTemplate: Email Template
-            emailTemplateHelp: Use <code>{sub}</code> syntax to use an attribute from the JWT
-            registrationHook: Registration Hook Endpoint
+            registrationHook: Registration Hook URL
             registrationHookHelp: >
                 A fully qualified URL that will be hit with a POST request when a user visits the forum for the first time.
                 The request should return a JSON:API payload that will be used to create the new user in Flarum.

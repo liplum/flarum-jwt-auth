@@ -41,22 +41,6 @@ app.initializers.add('liplum-jwt-auth', () => {
       placeholder: '0',
     })
     .registerSetting({
-      setting: 'liplum-jwt-auth.usernameTemplate',
-      type: 'text',
-      label: app.translator.trans('liplum-jwt-auth.admin.settings.usernameTemplate'),
-      help: app.translator.trans('liplum-jwt-auth.admin.settings.usernameTemplateHelp', {
-        sub: '{sub}',
-      }),
-    })
-    .registerSetting({
-      setting: 'liplum-jwt-auth.emailTemplate',
-      type: 'text',
-      label: app.translator.trans('liplum-jwt-auth.admin.settings.emailTemplate'),
-      help: app.translator.trans('liplum-jwt-auth.admin.settings.emailTemplateHelp', {
-        sub: '{sub}',
-      }),
-    })
-    .registerSetting({
       setting: 'liplum-jwt-auth.registrationHook',
       type: 'text',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.registrationHook'),

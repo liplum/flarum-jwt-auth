@@ -6,46 +6,131 @@
 composer require liplum/flarum-jwt-auth
 ```
 
-## Get Started
+## Forum Setup
 
-Users are matched through the `jwt_subject` column in the database that is matched to the token's `sub` value.
+Setup the JWT authentication by following the steps below in the extension settings page.
+You can find the corresponding backend implementation example in [the next chapter](#backend-setup).
 
-By default, tokens are validated using Google Firebase public keys (automatically retrieved and cached from Google servers) but custom keys can also be used.
+### 1. Set the cookie name
 
-A callback hook can be defined to obtain default values for new users from an external API.
+Set the name of [cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies) from the user browser requests. For example, "access_token".
 
-The JWT subject ID for the hook call can be retrieved by using the replacement code `{uid}` as part of the hook URL, by reading the JWT in the `Authorization` header or by reading the `data.id` value in the hook JSON POST body.
+### 2. Set the JWT audience
 
-The hook should return a [JSON:API](https://jsonapi.org/) compliant object describing the Flarum user attributes.
-These attributes will be passed internally to `POST /api/users` so any attribute added by an extension can also be provided.
+It's optional.
+
+### 3. Set the JWT secret
+
+The secret to sign(encode) and verify(decode) a JWT token.
+
+NOTE: keep it secure.
+
+The JWT payload should be something like this.
 
 ```json
 {
-  "data": {
-    "attributes": {
-      "username": "example",
-      "email": "example@app.tld"
-    }
+  "sub": "your_user_id"
+}
+```
+
+### 4. Set the JWT Signing Algorithm
+
+It's optional.
+
+It's "HS256" by default, by following the default option from the [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken) package.
+
+### 5. Set the registration hook URL
+
+The hook which will be called for new Flarum users.
+
+The payload of the hook request is in JSON,
+and the authentication can be checked via the `Authorization` header.
+for example:
+
+```js
+fetch(registrationHookUrl, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'Authorization': 'Bearer your_access_token'
+  },
+  body: JSON.stringify({
+    "sub": "your_user_id"
+  })
+})
+```
+
+And the backend should handle the registration request and respond something like this:
+
+These attributes will be passed internally to [POST Flarum "/api/users"](https://docs.flarum.org/rest-api/#create-user), so any attribute added by other extensions can also be provided.
+
+```json
+{
+  "attributes": {
+    "username": "example",
+    "email": "example@example.com"
   }
 }
 ```
 
-The validity of the hook request can be checked via the `Authorization` header.
-It will contain `Token <JWT token>` by default, but can be customized to a hard-coded secret token via the admin settings.
-The custom header setting will be applied verbatim as the header value, without any added prefix (i.e., `Token` is not added).
+## Backend Setup
 
-Users can be edited via their JWT subject ID by using the `PATCH /api/jwt/users/<sub>` endpoint.
-It works exactly the same way as `PATCH /api/users/<id>` but takes the JWT subject ID instead of Flarum ID.
+Taking the [express.js](https://expressjs.com/) backend server as an example, you can set up the following routes.
 
-By default, all accounts will be automatically enabled.
-You can change this behavior by returning `"isEmailConfirmed": false` attribute in the registration hook.
+```ts
+// Run "npm install express jsonwebtoken" to install essential packages
+import express from "express"
+import jwt from "jsonwebtoken"
 
-An admin user is used internally to call the REST API that creates new Flarum users.
-By default, user with ID `1` will be used but this can be customized in the admin settings.
-The value must be the Flarum ID (MySQL auto-increment) and not the JWT subject ID.
+const app = express()
+app.use(express.json())
 
-The original Flarum session object (Symfony session) and cookie are not used for stateless authentication, however the cookie session is kept because Flarum and some extensions cannot work without it.
-This session object is not invalidated during "login" and "logout" of the stateless JWT authentication, so there could be issues with extensions that rely on that object for other purposes than validation messages.
+const cookieName = process.env.COOKIE_NAME ?? "access_token"
+const jwtSecret = process.env.JWT_SECRET ?? "access_token_secret"
+
+app.post("/set-cookie", (req, res) => {
+  const token = jwt.sign({
+    // Edit this: it should be the user ID generally.
+    sub: "jwt_subject",
+  }, jwtSecret)
+  return res.status(200).cookie(cookieName, token).end()
+})
+
+// Remove the interface declaration and "satisfies" expression bellow,
+// if the plain javascript is used instead of typescript.
+interface VerifyResult {
+  attributes: {
+    username: string
+    email: string
+    /**
+     * Control whether the email of user is considered as verified.
+     * "true" by default 
+     */
+    isEmailConfirmed?: boolean
+  }
+}
+
+app.post("/register", (req, res) => {
+  if (req.headers["authorization"] !== "Bearer your_access_token") {
+    return res.status(401).end()
+  }
+  const sub = req.body.sub
+  // Complete this: check the sub (generally the user ID) in the database.
+  return res.status(200).json({
+    attributes: {
+      // Edit this: Keep it following flarum's username rule.
+      username: `name_of_${sub}`,
+      // Edit this: Keep it following flarum's email rule.
+      email: `email_of_${sub}@example.com`,
+    }
+  } satisfies VerifyResult).end()
+})
+
+const port = 80
+app.listen(port, () => {
+  console.log(`Your backend is running on http://localhost:${port}`)
+})
+```
 
 ## Hidden Iframe
 
@@ -77,3 +162,23 @@ window.parent.postMessage({
 
 The last parameter should be set to the Flarum `origin`.
 `'*'` can also be used but isn't recommended.
+
+## Under the hood
+
+Users are matched through the `jwt_subject` column in the database that is matched to the token's `sub` value.
+
+It will contain `Token <JWT token>` by default, but can be customized to a hard-coded secret token via the admin settings.
+The custom header setting will be applied verbatim as the header value, without any added prefix (i.e., `Token` is not added).
+
+Users can be edited via their JWT subject ID by using the `PATCH /api/jwt/users/<sub>` endpoint.
+It works exactly the same way as `PATCH /api/users/<id>` but takes the JWT subject ID instead of Flarum ID.
+
+By default, all accounts will be automatically enabled.
+You can change this behavior by returning `"isEmailConfirmed": false` attribute in the registration hook.
+
+An admin user is used internally to call the REST API that creates new Flarum users.
+By default, user with ID `1` will be used but this can be customized in the admin settings.
+The value must be the Flarum ID (MySQL auto-increment) and not the JWT subject ID.
+
+The original Flarum session object (Symfony session) and cookie are not used for stateless authentication, however the cookie session is kept because Flarum and some extensions cannot work without it.
+This session object is not invalidated during "login" and "logout" of the stateless JWT authentication, so there could be issues with extensions that rely on that object for other purposes than validation messages.
