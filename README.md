@@ -201,3 +201,7 @@ The value must be the Flarum ID (MySQL auto-increment) and not the JWT subject I
 
 The original Flarum session object (Symfony session) and cookie are not used for stateless authentication, however the cookie session is kept because Flarum and some extensions cannot work without it.
 This session object is not invalidated during "login" and "logout" of the stateless JWT authentication, so there could be issues with extensions that rely on that object for other purposes than validation messages.
+
+## Acknowledgement
+
+Thanks to <https://github.com/clarkwinkelmann/flarum-ext-jwt-cookie-login> with `MIT License Copyright (c) 2022 Clark Winkelmann`.
