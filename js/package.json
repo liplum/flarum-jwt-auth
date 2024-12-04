@@ -1,0 +1,17 @@
+{
+  "name": "@liplum/jwt-auth",
+  "private": true,
+  "dependencies": {
+    "flarum": "0.1.0-beta.16"
+  },
+  "devDependencies": {
+    "flarum-tsconfig": "^1.0",
+    "flarum-webpack-config": "^2.0",
+    "webpack": "^5.97.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "scripts": {
+    "dev": "webpack --mode development --watch",
+    "build": "webpack --mode production"
+  }
+}
