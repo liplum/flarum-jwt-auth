@@ -72,8 +72,19 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
         JWT::$leeway = (int)$this->settings->get('liplum-jwt-auth.expirationLeeway');
 
+        $algorithm = $this->settings->get('liplum-jwt-auth.jwtSignAlgorithm');
+
+        if ($this->settings->get('liplum-jwt-auth.jwtSecret')) {
+            $key = new Key(
+                $this->settings->get('liplum-jwt-auth.jwtSecret'),
+                $algorithm === null || trim($algorithm) === "" ? "HS256" : $algorithm,
+            );
+        } else {
+            $this->logInDebugMode('Missing JWT secret');
+            return null;
+        }
         try {
-            $payload = JWT::decode($jwt, $this->keys());
+            $payload = JWT::decode($jwt, $key);
         } catch (\Exception $exception) {
             $this->logInDebugMode('Invalid JWT cookie');
             return null;
@@ -160,27 +171,6 @@ class AuthenticateWithJWT implements MiddlewareInterface
         $this->logInDebugMode('Authenticating new JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
 
         return $user;
-    }
-
-    protected function keys()
-    {
-        $algorithm = $this->settings->get('liplum-jwt-auth.jwtSignAlgorithm');
-
-        if ($this->settings->get('liplum-jwt-auth.jwtSecret')) {
-            return new Key(
-                $this->settings->get('liplum-jwt-auth.jwtSecret'),
-                $algorithm === null || trim($algorithm) === "" ? "HS256" : $algorithm,
-            );
-        }
-
-        $keys = $this->cache->remember('liplum-jwt-auth.firebaseKeys', 86400, function () {
-            // Based on https://firebase.google.com/docs/auth/admin/verify-id-tokens?hl=en#verify_id_tokens_using_a_third-party_jwt_library
-            return Utils::jsonDecode($this->client->get('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com')->getBody()->getContents(), true);
-        });
-
-        return array_map(function ($key) {
-            return new Key($key, 'RS256');
-        }, $keys);
     }
 
     protected function replaceStringParameters(string $string, $payload): string

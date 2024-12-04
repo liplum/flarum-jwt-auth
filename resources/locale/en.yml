@@ -6,10 +6,10 @@ liplum-jwt-auth:
             actorIdHelp: >
                 This Flarum user will be used as the actor for the internal REST API request that creates new users.
                 It must be an admin user.
-            audience: JWT Audience / Firebase Project ID
-            audienceHelp: Validates the <code>aud</code> attribute of the token. Optional when not using Firebase
+            audience: JWT Audience
+            audienceHelp: Validates the <code>aud</code> attribute of the token.
             jwtSecret: JWT Secret
-            jwtSecretHelp: Leave Empty to use Google Firebase keys
+            jwtSecretHelp: Keep it secure.
             jwtSignAlgorithm: JWT Signing Algorithm
             jwtSignAlgorithmHelp: 'Only required with JWT Secret. "HS256" by default.'
             expirationLeeway: Expiration Leeway (seconds)
