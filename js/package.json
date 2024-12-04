@@ -1,5 +1,5 @@
 {
-  "name": "@liplum/jwt-auth",
+  "name": "@liplum/flarum-jwt-auth",
   "private": true,
   "version": "0.1",
   "devDependencies": {
