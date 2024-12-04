@@ -1,55 +1,54 @@
 liplum-jwt-auth:
-    admin:
-        settings:
-            identityFallback: Legacy Fallback
-            identityFallbackHelp: 'When JWT Token exists but "jwt_subject" is unset in database for legacy users.'
-            identityFallbackOptions:
-                none: No fallback
-                email: Fallback to email
-                username: Fallback to username
-            cookieName: Cookie Name
-            actorId: Flarum User ID for administrative actions
-            actorIdHelp: >
-                This Flarum user will be used as the actor for the internal REST API request that creates new users.
-                It must be an admin user.
-            audience: JWT Audience
-            audienceHelp: Validates the <code>aud</code> attribute of the token.
-            jwtSecret: JWT Secret
-            jwtSecretHelp: |
-                For security issue, you can set this in your "config.php" like below:
+  admin:
+    identityFallback: Legacy Fallback
+    identityFallbackHelp: 'When JWT Token exists but "jwt_subject" is unset in database for legacy users.'
+    identityFallbackOptions:
+      none: No fallback
+      email: Fallback to email
+      username: Fallback to username
+    cookieName: Cookie Name
+    actorId: Flarum User ID for administrative actions
+    actorIdHelp: >
+      This Flarum user will be used as the actor for the internal REST API request that creates new users.
+      It must be an admin user.
+    audience: JWT Audience
+    audienceHelp: Validates the <code>aud</code> attribute of the token.
+    jwtSecret: JWT Secret
+    jwtSecretHelp: |
+      For security issue, you can set this in your "config.php" like below:
 
-                "liplum-jwt-auth" => array(
-                    "jwtSecret" => "access_token_secret"
-                )
-            jwtSignAlgorithm: JWT Signing Algorithm
-            jwtSignAlgorithmHelp: '"HS256" by default.'
-            expirationLeeway: Expiration Leeway (seconds)
-            expirationLeewayHelp: >
-                How many additional seconds past JWT expiration should the session still start.
-                This value is only intended to be a few minutes at worst to account for clock skew times between servers.
-                However it can also be set to a much longer value if this is the only way to work around fixed short lifetimes of JWT from an external library.
-            registrationHook: Registration Hook URL
-            registrationHookHelp: >
-                A fully qualified URL that will be hit with a POST request when a user visits the forum for the first time.
-                The request should return a JSON:API payload that will be used to create the new user in Flarum.
-                Read the documentation at https://github.com/liplum/flarum-jwt-auth?tab=readme-ov-file#5-set-the-registration-hook-url to learn more.
-            authorizationHeader: Custom Authorization header value
-            authorizationHeaderHelp: If this field is left empty, <code>Authorization</code> header will contain <code>Token <JWT token></code>.
-            hiddenIframe: Hidden Iframe URL
-            hiddenIframeHelp: >
-                This iframe will be loaded off-screen on all pages of the Flarum single page application.
-                It can be used to periodically refresh the cookie and can use browser messaging to trigger a page refresh for auto-login or auto-logout.
-                See README for documentation.
-            autoLoginDelay: Hidden Iframe Auto Login Delay (milliseconds)
-            autoLoginDelayHelp: >
-                During how many seconds the page is allowed to refresh without user interaction if the hidden iframe returns a logged in status.
-                Past that delay, the user will receive an alert to ask whether they want to refresh the page.
-            logoutRedirect: Logout Redirect URL
-            logoutRedirectHelp: >
-                During a JWT stateless session, the Flarum logout link will be replaced with a link pointing to this URL.
-                If no value is set, the logout button will be hidden.
-    forum:
-        alert:
-            refresh: Refresh page
-            login: You have been connected automatically.
-            logout: Your session has expired.
+      "liplum-jwt-auth" => array(
+          "jwtSecret" => "access_token_secret"
+      )
+    jwtSignAlgorithm: JWT Signing Algorithm
+    jwtSignAlgorithmHelp: '"HS256" by default.'
+    expirationLeeway: Expiration Leeway (seconds)
+    expirationLeewayHelp: >
+      How many additional seconds past JWT expiration should the session still start.
+      This value is only intended to be a few minutes at worst to account for clock skew times between servers.
+      However it can also be set to a much longer value if this is the only way to work around fixed short lifetimes of JWT from an external library.
+    registrationHook: Registration Hook URL
+    registrationHookHelp: >
+      A fully qualified URL that will be hit with a POST request when a user visits the forum for the first time.
+      The request should return a JSON:API payload that will be used to create the new user in Flarum.
+      Read the documentation at https://github.com/liplum/flarum-jwt-auth?tab=readme-ov-file#5-set-the-registration-hook-url to learn more.
+    authorizationHeader: Custom Authorization header value
+    authorizationHeaderHelp: If this field is left empty, <code>Authorization</code> header will contain <code>Token <JWT token></code>.
+    hiddenIframe: Hidden Iframe URL
+    hiddenIframeHelp: >
+      This iframe will be loaded off-screen on all pages of the Flarum single page application.
+      It can be used to periodically refresh the cookie and can use browser messaging to trigger a page refresh for auto-login or auto-logout.
+      See README for documentation.
+    autoLoginDelay: Hidden Iframe Auto Login Delay (milliseconds)
+    autoLoginDelayHelp: >
+      During how many seconds the page is allowed to refresh without user interaction if the hidden iframe returns a logged in status.
+      Past that delay, the user will receive an alert to ask whether they want to refresh the page.
+    logoutRedirect: Logout Redirect URL
+    logoutRedirectHelp: >
+      During a JWT stateless session, the Flarum logout link will be replaced with a link pointing to this URL.
+      If no value is set, the logout button will be hidden.
+  forum:
+    alert:
+      refresh: Refresh page
+      login: You have been connected automatically.
+      logout: Your session has expired.
