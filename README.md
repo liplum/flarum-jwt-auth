@@ -23,14 +23,25 @@ It's optional.
 
 The secret to sign(encode) and verify(decode) a JWT token.
 
-NOTE: keep it secure.
-
 The JWT payload should be something like this.
 
 ```json
 {
   "sub": "your_user_id"
 }
+```
+
+For security issue, you can set the JWT secret in the [config.php](https://docs.flarum.org/config/)
+instead of barely display on extension settings page for anyone who has the extension management permission.
+
+```php
+<?php return array (
+  'debug' => false,
+  // other configurations
+  "liplum-jwt-auth" => array(
+    "jwtSecret" => "access_token_secret"
+  ),
+);
 ```
 
 ### 4. Set the JWT Signing Algorithm

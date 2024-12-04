@@ -56,7 +56,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
   protected function getUser(ServerRequestInterface $request): ?User
   {
-    $cookieName = $this->settings->get('liplum-jwt-auth.cookieName');
+    $cookieName = $this->getSettings('liplum-jwt-auth.cookieName');
     if (!$cookieName) {
       return null;
     }
@@ -70,13 +70,15 @@ class AuthenticateWithJWT implements MiddlewareInterface
       return null;
     }
 
-    JWT::$leeway = (int)$this->settings->get('liplum-jwt-auth.expirationLeeway');
+    JWT::$leeway = (int)$this->getSettings('liplum-jwt-auth.expirationLeeway');
 
-    $algorithm = $this->settings->get('liplum-jwt-auth.jwtSignAlgorithm');
+    $algorithm = $this->getSettings('liplum-jwt-auth.jwtSignAlgorithm');
 
-    if ($this->settings->get('liplum-jwt-auth.jwtSecret')) {
+    $jwtSecret = $this->getSettings('liplum-jwt-auth.jwtSecret');
+
+    if ($jwtSecret) {
       $key = new Key(
-        $this->settings->get('liplum-jwt-auth.jwtSecret'),
+        $jwtSecret,
         $algorithm === null || trim($algorithm) === "" ? "HS256" : $algorithm,
       );
     } else {
@@ -90,7 +92,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
       return null;
     }
 
-    $audience = $this->settings->get('liplum-jwt-auth.audience');
+    $audience = $this->getSettings('liplum-jwt-auth.audience');
 
     if ($audience && (!isset($payload->aud) || $payload->aud !== $audience)) {
       $this->logInDebugMode('Invalid JWT audience (' . ($payload->aud ?? 'missing') . ')');
@@ -112,8 +114,8 @@ class AuthenticateWithJWT implements MiddlewareInterface
       ],
     ];
 
-    if ($registrationHook = $this->settings->get('liplum-jwt-auth.registrationHook')) {
-      $authorization = $this->settings->get('liplum-jwt-auth.authorizationHeader');
+    if ($registrationHook = $this->getSettings('liplum-jwt-auth.registrationHook')) {
+      $authorization = $this->getSettings('liplum-jwt-auth.authorizationHeader');
 
       $hookUrl = $this->replaceStringParameters($registrationHook, $payload);
 
@@ -180,5 +182,10 @@ class AuthenticateWithJWT implements MiddlewareInterface
       $logger = resolve(LoggerInterface::class);
       $logger->info($message);
     }
+  }
+
+  private function getSettings(string $key)
+  {
+    return $this->config->offsetGet($key) ?? $this->settings->get($key);
   }
 }
