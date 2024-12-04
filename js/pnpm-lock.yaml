@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      flarum:
-        specifier: 0.1.0-beta.16
-        version: 0.1.0-beta.16
     devDependencies:
       flarum-tsconfig:
         specifier: ^1.0
@@ -917,9 +913,6 @@ packages:
     resolution: {integrity: sha512-kUCaCsXL8s/OhSWleWtIppRXDNBzAf8/ewCx9OIF0zNO0hlvY5T1N0EO0AnyUJbsp5nOCdzsTo9rTRRsbKT+IA==}
     peerDependencies:
       webpack: ^5.76.0
-
-  flarum@0.1.0-beta.16:
-    resolution: {integrity: sha512-uovm+6J8TO35dfbTSRtHRH6tz71W4dnEDfB63NOKHIhOz8oRh65qyWpXtlBOjv9f1cFMkMcjGHbWetb5lAIEnQ==}
 
   flat@5.0.2:
     resolution: {integrity: sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==}
@@ -2413,8 +2406,6 @@ snapshots:
       - bufferutil
       - supports-color
       - utf-8-validate
-
-  flarum@0.1.0-beta.16: {}
 
   flat@5.0.2: {}
 
