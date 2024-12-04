@@ -7,6 +7,7 @@ app.initializers.add('liplum-jwt-auth', () => {
       setting: 'liplum-jwt-auth.identityFallback',
       type: 'selectdropdown',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.identityFallback'),
+      help: app.translator.trans('liplum-jwt-auth.admin.settings.identityFallbackHelp'),
       options: {
         "none": app.translator.trans('liplum-jwt-auth.admin.settings.identityFallbackOptions.none'),
         "email": app.translator.trans('liplum-jwt-auth.admin.settings.identityFallbackOptions.email'),
