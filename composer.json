@@ -1,5 +1,5 @@
 {
-    "name": "liplum/flarum-jwt-auth",
+    "name": "liplum/jwt-auth",
     "description": "Stateless login for Flarum through JWT cookie",
     "keywords": [
         "flarum",
