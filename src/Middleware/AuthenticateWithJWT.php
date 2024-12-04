@@ -99,51 +99,51 @@ class AuthenticateWithJWT implements MiddlewareInterface
       $this->logInDebugMode('Invalid JWT audience (' . ($payload->aud ?? 'missing') . ')');
       return null;
     }
+    $sub = $payload->sub;
 
     $identityMode = $this->getSettings("liplum-jwt-auth.identityMode");
 
-    $user = User::query()->where('jwt_subject', $payload->sub)->first();
-
-    if ($user) {
-      $this->logInDebugMode('Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
-
-      return $user;
+    switch ($identityMode) {
+      case "jwt_subject":
+        $user = User::query()->where('jwt_subject', $sub)->first();
+        if ($user) {
+          $this->logInDebugMode("[$identityMode] " . 'Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
+          return $user;
+        }
+        break;
+      case "username":
+        $userAttributes = $this->getRegistration($jwt, $sub);
+        if (!$userAttributes) return null;
+        $username = Arr::get($userAttributes, "attributes.username");
+        $user = User::query()->where('username', $username)->first();
+        if ($user) {
+          $this->logInDebugMode("[$identityMode] " . 'Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
+          return $user;
+        }
+        break;
+      case "email":
+        $userAttributes = $this->getRegistration($jwt, $sub);
+        if (!$userAttributes) return null;
+        $email = Arr::get($userAttributes, "attributes.email");
+        $user = User::query()->where('email', $email)->first();
+        if ($user) {
+          $this->logInDebugMode("[$identityMode] " . 'Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
+          return $user;
+        }
+        break;
     }
 
-    $registerPayload = [
-      'attributes' => [
-        'isEmailConfirmed' => true,
-        'password' => Str::random(32),
+    $userAttributes = $userAttributes ?? $this->getRegistration($jwt, $sub);
+    if (!$userAttributes) return null;
+    $registerPayload = array_merge_recursive(
+      [
+        'attributes' => [
+          'isEmailConfirmed' => true,
+          'password' => Str::random(32),
+        ],
       ],
-    ];
-
-    if ($registrationHook = $this->getSettings('liplum-jwt-auth.registrationHook')) {
-      $authorization = $this->getSettings('liplum-jwt-auth.authorizationHeader');
-
-      $hookUrl = $this->replaceStringParameters($registrationHook, $payload);
-
-      $response = $this->client->post($hookUrl, [
-        'headers' => [
-          'Authorization' => $authorization ?: ('Token ' . $jwt),
-        ],
-        'json' => [
-          "data" => [
-            'sub' => $payload->sub,
-          ]
-        ],
-      ]);
-
-      $responseBody = $response->getBody()->getContents();
-
-      $this->logInDebugMode("Response of POST $hookUrl:" . PHP_EOL . $responseBody);
-
-      $registerPayload = array_merge_recursive(
-        $registerPayload,
-        Arr::get(Utils::jsonDecode($responseBody, true), 'data', []),
-      );
-    } else {
-      return null;
-    }
+      $userAttributes,
+    );
 
     $actor = User::query()->where('id', $this->getSettings('liplum-jwt-auth.actorId') ?: 1)->firstOrFail();
 
@@ -190,5 +190,31 @@ class AuthenticateWithJWT implements MiddlewareInterface
   private function getSettings(string $key)
   {
     return $this->config->offsetGet($key) ?? $this->settings->get($key);
+  }
+
+  private function getRegistration(string $jwt, string $sub)
+  {
+    $registrationHook = $this->getSettings('liplum-jwt-auth.registrationHook');
+    if (!$registrationHook) {
+      return null;
+    }
+    $authorization = $this->getSettings('liplum-jwt-auth.authorizationHeader');
+
+    $response = $this->client->post($registrationHook, [
+      'headers' => [
+        'Authorization' => $authorization ?: ('Token ' . $jwt),
+      ],
+      'json' => [
+        "data" => [
+          'sub' => $sub,
+        ]
+      ],
+    ]);
+
+    $responseBody = $response->getBody()->getContents();
+
+    $this->logInDebugMode("Response of POST $registrationHook:" . PHP_EOL . $responseBody);
+
+    return Arr::get(Utils::jsonDecode($responseBody, true), 'data', []);
   }
 }

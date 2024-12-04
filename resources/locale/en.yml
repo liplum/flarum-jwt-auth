@@ -17,13 +17,13 @@ liplum-jwt-auth:
             jwtSecretHelp: |
                 Or you can set this in your config.php like below:
 
-                <?php return array (
-                    'debug' => false,
-                    // other configurations...
-                    "liplum-jwt-auth" => array(
-                        "jwtSecret" => "access_token_secret"
-                    ),
-                );
+                <?php return array ( <br/>
+                    'debug' => false, <br/>
+                    // other configurations... <br/>
+                    "liplum-jwt-auth" => array( <br/>
+                        "jwtSecret" => "access_token_secret" <br/>
+                    ), <br/>
+                ); <br/>
             jwtSignAlgorithm: JWT Signing Algorithm
             jwtSignAlgorithmHelp: 'Only required with JWT Secret. "HS256" by default.'
             expirationLeeway: Expiration Leeway (seconds)
@@ -35,9 +35,7 @@ liplum-jwt-auth:
             registrationHookHelp: >
                 A fully qualified URL that will be hit with a POST request when a user visits the forum for the first time.
                 The request should return a JSON:API payload that will be used to create the new user in Flarum.
-                Use <code>{sub}</code> syntax to use an attribute from the JWT in the URL.
-                The complete JWT will be passed in the <code>Authorization</code> header.
-                Username and Email are optional if a template value is configured.
+                Read the documentation at https://github.com/liplum/flarum-jwt-auth?tab=readme-ov-file#5-set-the-registration-hook-url to learn more.
             authorizationHeader: Custom Authorization header value
             authorizationHeaderHelp: If this field is left empty, <code>Authorization</code> header will contain <code>Token <JWT token></code>.
             hiddenIframe: Hidden Iframe URL
