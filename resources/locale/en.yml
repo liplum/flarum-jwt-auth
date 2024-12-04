@@ -8,10 +8,10 @@ liplum-jwt-auth:
                 It must be an admin user.
             audience: JWT Audience / Firebase Project ID
             audienceHelp: Validates the <code>aud</code> attribute of the token. Optional when not using Firebase
-            publicKey: JWT Secret
-            publicKeyHelp: Leave Empty to use Google Firebase keys
-            publicKeyAlgorithm: JWT Signing Algorithm
-            publicKeyAlgorithmHelp: 'Only required with JWT Secret. "HS256" by default.'
+            jwtSecret: JWT Secret
+            jwtSecretHelp: Leave Empty to use Google Firebase keys
+            jwtSignAlgorithm: JWT Signing Algorithm
+            jwtSignAlgorithmHelp: 'Only required with JWT Secret. "HS256" by default.'
             expirationLeeway: Expiration Leeway (seconds)
             expirationLeewayHelp: >
                 How many additional seconds past JWT expiration should the session still start.

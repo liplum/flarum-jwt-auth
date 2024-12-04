@@ -17,7 +17,7 @@ return [
     new Extend\Locales(__DIR__ . '/resources/locale'),
 
     (new Extend\Routes('api'))
-        ->patch('/jwt/users/{id}', 'jwt-cookie-login.users.update', Controller\EditUserController::class),
+        ->patch('/jwt/users/{id}', 'liplum-jwt-auth.users.update', Controller\EditUserController::class),
 
     (new Extend\Middleware('forum'))
         ->insertAfter(AuthenticateWithSession::class, AuthenticateWithJWT::class),

@@ -18,12 +18,12 @@ class ForumAttributes
     {
         $attributes = [];
 
-        $iframe = $this->settings->get('jwt-cookie-login.hiddenIframe');
+        $iframe = $this->settings->get('liplum-jwt-auth.hiddenIframe');
 
         if ($iframe) {
             $attributes['jwtIframe'] = $iframe;
 
-            $autoLogin = $this->settings->get('jwt-cookie-login.autoLoginDelay');
+            $autoLogin = $this->settings->get('liplum-jwt-auth.autoLoginDelay');
 
             // Defaults to 2000ms
             $attributes['autoLoginDelay'] = is_numeric($autoLogin) ? (int)$autoLogin : 2000;
@@ -33,7 +33,7 @@ class ForumAttributes
             return $attributes;
         }
 
-        $logoutRedirect = $this->settings->get('jwt-cookie-login.logoutRedirect');
+        $logoutRedirect = $this->settings->get('liplum-jwt-auth.logoutRedirect');
 
         return $attributes + [
                 // Use an explicit "false" value when URL is disabled because we'll use this value to know the logout field should be hidden

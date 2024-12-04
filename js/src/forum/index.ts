@@ -5,7 +5,7 @@ import LinkButton from 'flarum/common/components/LinkButton';
 import SessionDropdown from 'flarum/forum/components/SessionDropdown';
 import ForumApplication from 'flarum/forum/ForumApplication';
 
-app.initializers.add('jwt-auth', () => {
+app.initializers.add('liplum-jwt-auth', () => {
   extend(SessionDropdown.prototype, 'items', function (items) {
     const href = app.forum.attribute<string | false>('logoutRedirect');
 

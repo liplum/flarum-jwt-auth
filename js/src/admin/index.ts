@@ -1,47 +1,47 @@
 import app from 'flarum/admin/app';
 
-app.initializers.add('jwt-auth', () => {
+app.initializers.add('liplum-jwt-auth', () => {
   app.extensionData
     .for('liplum-jwt-auth')
     .registerSetting({
-      setting: 'jwt-auth.cookieName',
+      setting: 'liplum-jwt-auth.cookieName',
       type: 'text',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.cookieName'),
     })
     .registerSetting({
-      setting: 'jwt-auth.actorId',
+      setting: 'liplum-jwt-auth.actorId',
       type: 'text',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.actorId'),
       help: app.translator.trans('liplum-jwt-auth.admin.settings.actorIdHelp'),
       placeholder: '1',
     })
     .registerSetting({
-      setting: 'jwt-auth.audience',
+      setting: 'liplum-jwt-auth.audience',
       type: 'text',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.audience'),
       help: app.translator.trans('liplum-jwt-auth.admin.settings.audienceHelp'),
     })
     .registerSetting({
-      setting: 'jwt-auth.publicKey',
+      setting: 'liplum-jwt-auth.publicKey',
       type: 'textarea',
-      label: app.translator.trans('liplum-jwt-auth.admin.settings.publicKey'),
-      help: app.translator.trans('liplum-jwt-auth.admin.settings.publicKeyHelp'),
+      label: app.translator.trans('liplum-jwt-auth.admin.settings.jwtSecret'),
+      help: app.translator.trans('liplum-jwt-auth.admin.settings.jwtSecretHelp'),
     })
     .registerSetting({
-      setting: 'jwt-auth.publicKeyAlgorithm',
+      setting: 'liplum-jwt-auth.publicKeyAlgorithm',
       type: 'text',
-      label: app.translator.trans('liplum-jwt-auth.admin.settings.publicKeyAlgorithm'),
-      help: app.translator.trans('liplum-jwt-auth.admin.settings.publicKeyAlgorithmHelp'),
+      label: app.translator.trans('liplum-jwt-auth.admin.settings.jwtSignAlgorithm'),
+      help: app.translator.trans('liplum-jwt-auth.admin.settings.jwtSignAlgorithmHelp'),
     })
     .registerSetting({
-      setting: 'jwt-auth.expirationLeeway',
+      setting: 'liplum-jwt-auth.expirationLeeway',
       type: 'number',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.expirationLeeway'),
       help: app.translator.trans('liplum-jwt-auth.admin.settings.expirationLeewayHelp'),
       placeholder: '0',
     })
     .registerSetting({
-      setting: 'jwt-auth.usernameTemplate',
+      setting: 'liplum-jwt-auth.usernameTemplate',
       type: 'text',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.usernameTemplate'),
       help: app.translator.trans('liplum-jwt-auth.admin.settings.usernameTemplateHelp', {
@@ -49,7 +49,7 @@ app.initializers.add('jwt-auth', () => {
       }),
     })
     .registerSetting({
-      setting: 'jwt-auth.emailTemplate',
+      setting: 'liplum-jwt-auth.emailTemplate',
       type: 'text',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.emailTemplate'),
       help: app.translator.trans('liplum-jwt-auth.admin.settings.emailTemplateHelp', {
@@ -57,7 +57,7 @@ app.initializers.add('jwt-auth', () => {
       }),
     })
     .registerSetting({
-      setting: 'jwt-auth.registrationHook',
+      setting: 'liplum-jwt-auth.registrationHook',
       type: 'text',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.registrationHook'),
       help: app.translator.trans('liplum-jwt-auth.admin.settings.registrationHookHelp', {
@@ -65,26 +65,26 @@ app.initializers.add('jwt-auth', () => {
       }),
     })
     .registerSetting({
-      setting: 'jwt-auth.authorizationHeader',
+      setting: 'liplum-jwt-auth.authorizationHeader',
       type: 'text',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.authorizationHeader'),
       help: app.translator.trans('liplum-jwt-auth.admin.settings.authorizationHeaderHelp'),
     })
     .registerSetting({
-      setting: 'jwt-auth.hiddenIframe',
+      setting: 'liplum-jwt-auth.hiddenIframe',
       type: 'text',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.hiddenIframe'),
       help: app.translator.trans('liplum-jwt-auth.admin.settings.hiddenIframeHelp'),
     })
     .registerSetting({
-      setting: 'jwt-auth.autoLoginDelay',
+      setting: 'liplum-jwt-auth.autoLoginDelay',
       type: 'number',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.autoLoginDelay'),
       help: app.translator.trans('liplum-jwt-auth.admin.settings.autoLoginDelayHelp'),
       placeholder: '2000',
     })
     .registerSetting({
-      setting: 'jwt-auth.logoutRedirect',
+      setting: 'liplum-jwt-auth.logoutRedirect',
       type: 'text',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.logoutRedirect'),
       help: app.translator.trans('liplum-jwt-auth.admin.settings.logoutRedirectHelp'),

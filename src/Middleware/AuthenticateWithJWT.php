@@ -56,7 +56,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
     protected function getUser(ServerRequestInterface $request): ?User
     {
-        $cookie = FigRequestCookies::get($request, $this->settings->get('jwt-cookie-login.cookieName') ?: 'invalid');
+        $cookie = FigRequestCookies::get($request, $this->settings->get('liplum-jwt-auth.cookieName') ?: 'invalid');
 
         $jwt = $cookie->getValue();
 
@@ -65,7 +65,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
             return null;
         }
 
-        JWT::$leeway = (int)$this->settings->get('jwt-cookie-login.expirationLeeway');
+        JWT::$leeway = (int)$this->settings->get('liplum-jwt-auth.expirationLeeway');
 
         try {
             $payload = JWT::decode($jwt, $this->keys());
@@ -74,7 +74,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
             return null;
         }
 
-        $audience = $this->settings->get('jwt-cookie-login.audience');
+        $audience = $this->settings->get('liplum-jwt-auth.audience');
 
         if ($audience && (!isset($payload->aud) || $payload->aud !== $audience)) {
             $this->logInDebugMode('Invalid JWT audience (' . ($payload->aud ?? 'missing') . ')');
@@ -96,8 +96,8 @@ class AuthenticateWithJWT implements MiddlewareInterface
             ],
         ];
 
-        if ($registrationHook = $this->settings->get('jwt-cookie-login.registrationHook')) {
-            $authorization = $this->settings->get('jwt-cookie-login.authorizationHeader');
+        if ($registrationHook = $this->settings->get('liplum-jwt-auth.registrationHook')) {
+            $authorization = $this->settings->get('liplum-jwt-auth.authorizationHeader');
 
             $hookUrl = $this->replaceStringParameters($registrationHook, $payload);
 
@@ -125,19 +125,19 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
         if (
             !Arr::has($registerPayload, 'attributes.username') &&
-            $usernameTemplate = $this->settings->get('jwt-cookie-login.usernameTemplate')
+            $usernameTemplate = $this->settings->get('liplum-jwt-auth.usernameTemplate')
         ) {
             $registerPayload['attributes']['username'] = $this->replaceStringParameters($usernameTemplate, $payload);
         }
 
         if (
             !Arr::has($registerPayload, 'attributes.email') &&
-            $emailTemplate = $this->settings->get('jwt-cookie-login.emailTemplate')
+            $emailTemplate = $this->settings->get('liplum-jwt-auth.emailTemplate')
         ) {
             $registerPayload['attributes']['email'] = $this->replaceStringParameters($emailTemplate, $payload);
         }
 
-        $actor = User::query()->where('id', $this->settings->get('jwt-cookie-login.actorId') ?: 1)->firstOrFail();
+        $actor = User::query()->where('id', $this->settings->get('liplum-jwt-auth.actorId') ?: 1)->firstOrFail();
 
         $this->logInDebugMode("Performing internal request to POST /api/users with data:" . PHP_EOL . json_encode($registerPayload, JSON_PRETTY_PRINT));
 
@@ -159,14 +159,14 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
     protected function keys()
     {
-        if ($this->settings->get('jwt-cookie-login.publicKey')) {
+        if ($this->settings->get('liplum-jwt-auth.publicKey')) {
             return new Key(
-                $this->settings->get('jwt-cookie-login.publicKey'),
-                $this->settings->get('jwt-cookie-login.publicKeyAlgorithm') ?? "HS256",
+                $this->settings->get('liplum-jwt-auth.publicKey'),
+                $this->settings->get('liplum-jwt-auth.publicKeyAlgorithm') ?? "HS256",
             );
         }
 
-        $keys = $this->cache->remember('jwt-cookie-login.firebaseKeys', 86400, function () {
+        $keys = $this->cache->remember('liplum-jwt-auth.firebaseKeys', 86400, function () {
             // Based on https://firebase.google.com/docs/auth/admin/verify-id-tokens?hl=en#verify_id_tokens_using_a_third-party_jwt_library
             return Utils::jsonDecode($this->client->get('https://www.googleapis.com/robot/v1/metadata/x509/securetoken@system.gserviceaccount.com')->getBody()->getContents(), true);
         });
