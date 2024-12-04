@@ -4,15 +4,15 @@ app.initializers.add('liplum-jwt-auth', () => {
   app.extensionData
     .for('liplum-jwt-auth')
     .registerSetting({
-      setting: 'liplum-jwt-auth.identificationMode',
+      setting: 'liplum-jwt-auth.identityMode',
       type: 'selectdropdown',
-      label: app.translator.trans('liplum-jwt-auth.admin.settings.identificationMode'),
+      label: app.translator.trans('liplum-jwt-auth.admin.settings.identityMode'),
       options: {
-        "default": "",
-        "email": "email",
-        "username": "username",
+        "jwt_subject": app.translator.trans('liplum-jwt-auth.admin.settings.identityModeOptions.jwt_subject'),
+        "email": app.translator.trans('liplum-jwt-auth.admin.settings.identityModeOptions.email'),
+        "username": app.translator.trans('liplum-jwt-auth.admin.settings.identityModeOptions.username'),
       },
-      default: "default",
+      default: "jwt_subject",
     })
     .registerSetting({
       setting: 'liplum-jwt-auth.cookieName',

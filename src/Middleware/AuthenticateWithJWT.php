@@ -100,6 +100,8 @@ class AuthenticateWithJWT implements MiddlewareInterface
       return null;
     }
 
+    $identityMode = $this->getSettings("liplum-jwt-auth.identityMode");
+
     $user = User::query()->where('jwt_subject', $payload->sub)->first();
 
     if ($user) {

@@ -1,7 +1,11 @@
 liplum-jwt-auth:
     admin:
         settings:
-            identificationMode: How the extension identifies users
+            identityModeMode: How the extension identifies users
+            identityModeOptions:
+                jwt_subject: Based on "sub" in JWT
+                email: Based on email from response
+                username: Based on username from response
             cookieName: Cookie Name
             actorId: Flarum User ID for administrative actions
             actorIdHelp: >
