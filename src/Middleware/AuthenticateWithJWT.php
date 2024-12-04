@@ -159,10 +159,12 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
     protected function keys()
     {
-        if ($this->settings->get('liplum-jwt-auth.publicKey')) {
+        $algorithm = $this->settings->get('liplum-jwt-auth.jwtSignAlgorithm');
+
+        if ($this->settings->get('liplum-jwt-auth.jwtSecret')) {
             return new Key(
-                $this->settings->get('liplum-jwt-auth.publicKey'),
-                $this->settings->get('liplum-jwt-auth.publicKeyAlgorithm') ?? "HS256",
+                $this->settings->get('liplum-jwt-auth.jwtSecret'),
+                $algorithm === null || trim($algorithm) === "" ? "HS256" : $algorithm,
             );
         }
 

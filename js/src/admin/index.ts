@@ -22,13 +22,13 @@ app.initializers.add('liplum-jwt-auth', () => {
       help: app.translator.trans('liplum-jwt-auth.admin.settings.audienceHelp'),
     })
     .registerSetting({
-      setting: 'liplum-jwt-auth.publicKey',
+      setting: 'liplum-jwt-auth.jwtSecret',
       type: 'textarea',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.jwtSecret'),
       help: app.translator.trans('liplum-jwt-auth.admin.settings.jwtSecretHelp'),
     })
     .registerSetting({
-      setting: 'liplum-jwt-auth.publicKeyAlgorithm',
+      setting: 'liplum-jwt-auth.jwtSignAlgorithm',
       type: 'text',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.jwtSignAlgorithm'),
       help: app.translator.trans('liplum-jwt-auth.admin.settings.jwtSignAlgorithmHelp'),
