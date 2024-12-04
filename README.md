@@ -43,7 +43,7 @@ It's "HS256" by default, by following the default option from the [jsonwebtoken]
 
 The hook which will be called for new Flarum users.
 
-The payload of the hook request is in JSON,
+The payload of the hook request is in [JSON:API](https://jsonapi.org/) which Flarum uses,
 and the authentication can be checked via the `Authorization` header.
 for example:
 
@@ -55,20 +55,24 @@ fetch(registrationHookUrl, {
     'Authorization': 'Bearer your_access_token'
   },
   body: JSON.stringify({
-    "sub": "your_user_id"
+    "data": {
+      "sub": "your_user_id"
+    }
   })
 })
 ```
 
-And the backend should handle the registration request and respond something like this:
+And the backend should handle the registration request and respond a the user attributes in [JSON:API](https://jsonapi.org/):
 
 These attributes will be passed internally to [POST Flarum "/api/users"](https://docs.flarum.org/rest-api/#create-user), so any attribute added by other extensions can also be provided.
 
 ```json
 {
-  "attributes": {
-    "username": "example",
-    "email": "example@example.com"
+  "data": {
+    "attributes": {
+      "username": "example",
+      "email": "example@example.com"
+    }
   }
 }
 ```
@@ -99,14 +103,16 @@ app.post("/set-cookie", (req, res) => {
 // Remove the interface declaration and "satisfies" expression bellow,
 // if the plain javascript is used instead of typescript.
 interface VerifyResult {
-  attributes: {
-    username: string
-    email: string
-    /**
-     * Control whether the email of user is considered as verified.
-     * "true" by default 
-     */
-    isEmailConfirmed?: boolean
+  data: {
+    attributes: {
+      username: string
+      email: string
+      /**
+       * Control whether the email of user is considered as verified.
+       * "true" by default 
+       */
+      isEmailConfirmed?: boolean
+    }
   }
 }
 
@@ -117,11 +123,13 @@ app.post("/register", (req, res) => {
   const sub = req.body.sub
   // Complete this: check the sub (generally the user ID) in the database.
   return res.status(200).json({
-    attributes: {
-      // Edit this: Keep it following flarum's username rule.
-      username: `name_of_${sub}`,
-      // Edit this: Keep it following flarum's email rule.
-      email: `email_of_${sub}@example.com`,
+    data: {
+      attributes: {
+        // Edit this: Keep it following flarum's username rule.
+        username: `name_of_${sub}`,
+        // Edit this: Keep it following flarum's email rule.
+        email: `email_of_${sub}@example.com`,
+      }
     }
   } satisfies VerifyResult).end()
 })

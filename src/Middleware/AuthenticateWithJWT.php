@@ -122,7 +122,9 @@ class AuthenticateWithJWT implements MiddlewareInterface
           'Authorization' => $authorization ?: ('Token ' . $jwt),
         ],
         'json' => [
-          'sub' => $payload->sub,
+          "data" => [
+            'sub' => $payload->sub,
+          ]
         ],
       ]);
 
@@ -130,11 +132,9 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
       $this->logInDebugMode("Response of POST $hookUrl:" . PHP_EOL . $responseBody);
 
-      $result = Utils::jsonDecode($responseBody, true) ?? [];
-
       $registerPayload = array_merge_recursive(
         $registerPayload,
-        $result,
+        Arr::get(Utils::jsonDecode($responseBody, true), 'data', []),
       );
     } else {
       return null;
