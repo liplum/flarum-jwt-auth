@@ -160,7 +160,10 @@ class AuthenticateWithJWT implements MiddlewareInterface
     protected function keys()
     {
         if ($this->settings->get('jwt-cookie-login.publicKey')) {
-            return new Key($this->settings->get('jwt-cookie-login.publicKey'), $this->settings->get('jwt-cookie-login.publicKeyAlgorithm'));
+            return new Key(
+                $this->settings->get('jwt-cookie-login.publicKey'),
+                $this->settings->get('jwt-cookie-login.publicKeyAlgorithm') ?? "HS256",
+            );
         }
 
         $keys = $this->cache->remember('jwt-cookie-login.firebaseKeys', 86400, function () {

@@ -1,5 +1,13 @@
 # JSON Web Token Cookie Login
 
+## Installation
+
+```bash
+composer require liplum/flarum-jwt-auth
+```
+
+## Description
+
 This extension implements quasi-stateless JWT-based sessions in Flarum.
 
 The use case for this extension is implementing global login with an external platform serving as the master.
@@ -46,7 +54,7 @@ The value must be the Flarum ID (MySQL auto-increment) and not the JWT subject I
 The original Flarum session object (Symfony session) and cookie are not used for stateless authentication, however the cookie session is kept because Flarum and some extensions cannot work without it.
 This session object is not invalidated during "login" and "logout" of the stateless JWT authentication, so there could be issues with extensions that rely on that object for other purposes than validation messages.
 
-### Hidden Iframe
+## Hidden Iframe
 
 The hidden iframe offers a way to refresh the cookie in the background and optionally to provide auto login.
 
@@ -76,9 +84,3 @@ window.parent.postMessage({
 
 The last parameter should be set to the Flarum `origin`.
 `'*'` can also be used but isn't recommended.
-
-## Installation
-
-```
-    composer require liplum/flarum-jwt-auth
-```
