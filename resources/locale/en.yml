@@ -1,11 +1,11 @@
 liplum-jwt-auth:
     admin:
         settings:
-            identityFallbackMode: 'When JWT Token exists but "jwt_subject" is unset in database for legacy users.'
+            identityFallback: 'When JWT Token exists but "jwt_subject" is unset in database for legacy users.'
             identityFallbackOptions:
-                jwt_subject: Based on "sub" in JWT
-                email: Based on email from response
-                username: Based on username from response
+                none: No fallback
+                email: Fallback to email
+                username: Fallback to username
             cookieName: Cookie Name
             actorId: Flarum User ID for administrative actions
             actorIdHelp: >
@@ -15,17 +15,13 @@ liplum-jwt-auth:
             audienceHelp: Validates the <code>aud</code> attribute of the token.
             jwtSecret: JWT Secret
             jwtSecretHelp: |
-                Or you can set this in your config.php like below:
+                For security issue, you can set this in your "config.php" like below:
 
-                <?php return array ( <br/>
-                    'debug' => false, <br/>
-                    // other configurations... <br/>
-                    "liplum-jwt-auth" => array( <br/>
-                        "jwtSecret" => "access_token_secret" <br/>
-                    ), <br/>
-                ); <br/>
+                "liplum-jwt-auth" => array(
+                    "jwtSecret" => "access_token_secret"
+                )
             jwtSignAlgorithm: JWT Signing Algorithm
-            jwtSignAlgorithmHelp: 'Only required with JWT Secret. "HS256" by default.'
+            jwtSignAlgorithmHelp: '"HS256" by default.'
             expirationLeeway: Expiration Leeway (seconds)
             expirationLeewayHelp: >
                 How many additional seconds past JWT expiration should the session still start.
