@@ -4,6 +4,17 @@ app.initializers.add('liplum-jwt-auth', () => {
   app.extensionData
     .for('liplum-jwt-auth')
     .registerSetting({
+      setting: 'liplum-jwt-auth.identificationMode',
+      type: 'selectdropdown',
+      label: app.translator.trans('liplum-jwt-auth.admin.settings.identificationMode'),
+      options: {
+        "default": "",
+        "email": "email",
+        "username": "username",
+      },
+      default: "default",
+    })
+    .registerSetting({
       setting: 'liplum-jwt-auth.cookieName',
       type: 'text',
       label: app.translator.trans('liplum-jwt-auth.admin.settings.cookieName'),

@@ -37,7 +37,7 @@ instead of barely display on extension settings page for anyone who has the exte
 ```php
 <?php return array (
   'debug' => false,
-  // other configurations
+  // other configurations...
   "liplum-jwt-auth" => array(
     "jwtSecret" => "access_token_secret"
   ),

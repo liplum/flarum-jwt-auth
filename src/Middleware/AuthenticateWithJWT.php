@@ -85,6 +85,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
       $this->logInDebugMode('Missing JWT secret');
       return null;
     }
+
     try {
       $payload = JWT::decode($jwt, $key);
     } catch (\Exception $exception) {
@@ -142,7 +143,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
       return null;
     }
 
-    $actor = User::query()->where('id', $this->settings->get('liplum-jwt-auth.actorId') ?: 1)->firstOrFail();
+    $actor = User::query()->where('id', $this->getSettings('liplum-jwt-auth.actorId') ?: 1)->firstOrFail();
 
     $this->logInDebugMode("Performing internal request to POST /api/users with data:" . PHP_EOL . json_encode($registerPayload, JSON_PRETTY_PRINT));
 
@@ -186,6 +187,6 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
   private function getSettings(string $key)
   {
-    return $this->config->offsetGet(str_replace(".", "-", $key)) ?? $this->settings->get($key);
+    return $this->config->offsetGet($key) ?? $this->settings->get($key);
   }
 }

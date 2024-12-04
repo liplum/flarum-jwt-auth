@@ -1,6 +1,7 @@
 liplum-jwt-auth:
     admin:
         settings:
+            identificationMode: How the extension identifies users
             cookieName: Cookie Name
             actorId: Flarum User ID for administrative actions
             actorIdHelp: >
@@ -9,7 +10,16 @@ liplum-jwt-auth:
             audience: JWT Audience
             audienceHelp: Validates the <code>aud</code> attribute of the token.
             jwtSecret: JWT Secret
-            jwtSecretHelp: Keep it secure.
+            jwtSecretHelp: |
+                Or you can set this in your config.php like below:
+
+                <?php return array (
+                    'debug' => false,
+                    // other configurations...
+                    "liplum-jwt-auth" => array(
+                        "jwtSecret" => "access_token_secret"
+                    ),
+                );
             jwtSignAlgorithm: JWT Signing Algorithm
             jwtSignAlgorithmHelp: 'Only required with JWT Secret. "HS256" by default.'
             expirationLeeway: Expiration Leeway (seconds)
