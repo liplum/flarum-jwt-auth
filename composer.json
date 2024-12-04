@@ -1,10 +1,10 @@
 {
     "name": "liplum/flarum-jwt-auth",
     "description": "Stateless login for Flarum through JWT cookie",
+    "version": "0.1",
     "keywords": [
         "flarum",
-        "jwt",
-        "firebase"
+        "jwt"
     ],
     "type": "flarum-extension",
     "license": "MIT",
