@@ -4,6 +4,8 @@
   "version": "0.1",
   "keywords": [
     "flarum",
+    "flarum-extension",
+    "flarum-ext",
     "jwt"
   ],
   "type": "flarum-extension",
