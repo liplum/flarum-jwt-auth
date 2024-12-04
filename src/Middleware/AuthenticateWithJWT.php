@@ -186,6 +186,6 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
   private function getSettings(string $key)
   {
-    return $this->config->offsetGet($key) ?? $this->settings->get($key);
+    return $this->config->offsetGet(str_replace(".", "-", $key)) ?? $this->settings->get($key);
   }
 }
