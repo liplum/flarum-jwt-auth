@@ -1,7 +1,7 @@
 liplum-jwt-auth:
     admin:
         settings:
-            identityFallback: '"jwt_subject" Fallback'
+            identityFallback: Legacy Fallback
             identityFallbackHelp: 'When JWT Token exists but "jwt_subject" is unset in database for legacy users.'
             identityFallbackOptions:
                 none: No fallback
