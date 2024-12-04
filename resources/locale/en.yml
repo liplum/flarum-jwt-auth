@@ -1,8 +1,8 @@
 liplum-jwt-auth:
     admin:
         settings:
-            identityModeMode: How the extension identifies users
-            identityModeOptions:
+            identityFallbackMode: 'When JWT Token exists but "jwt_subject" is unset in database for legacy users.'
+            identityFallbackOptions:
                 jwt_subject: Based on "sub" in JWT
                 email: Based on email from response
                 username: Based on username from response
