@@ -1,4 +1,4 @@
-# JSON Web Token Cookie Login
+# Flarum JSON Web Token Auth
 
 ## Installation
 
