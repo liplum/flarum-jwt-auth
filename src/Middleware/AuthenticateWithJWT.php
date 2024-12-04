@@ -56,12 +56,17 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
     protected function getUser(ServerRequestInterface $request): ?User
     {
-        $cookie = FigRequestCookies::get($request, $this->settings->get('liplum-jwt-auth.cookieName') ?: 'invalid');
+        $cookieName = $this->settings->get('liplum-jwt-auth.cookieName');
+        if (!$cookieName) {
+            return null;
+        }
+
+        $cookie = FigRequestCookies::get($request, $cookieName);
 
         $jwt = $cookie->getValue();
 
         if (empty($jwt)) {
-            $this->logInDebugMode('No JWT cookie');
+            $this->logInDebugMode("No JWT cookie of $cookieName");
             return null;
         }
 

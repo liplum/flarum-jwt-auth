@@ -6,14 +6,7 @@
 composer require liplum/flarum-jwt-auth
 ```
 
-## Description
-
-This extension implements quasi-stateless JWT-based sessions in Flarum.
-
-The use case for this extension is implementing global login with an external platform serving as the master.
-Your code is responsible for setting and updating the cookie, and Flarum will automatically connect and/or create users based on the content of the JWT.
-No example code is available for the master implementation.
-The information below should allow you to implement it in any programming language.
+## Get Started
 
 Users are matched through the `jwt_subject` column in the database that is matched to the token's `sub` value.
 
@@ -45,7 +38,7 @@ Users can be edited via their JWT subject ID by using the `PATCH /api/jwt/users/
 It works exactly the same way as `PATCH /api/users/<id>` but takes the JWT subject ID instead of Flarum ID.
 
 By default, all accounts will be automatically enabled.
-You can change this behaviour by returning `"isEmailConfirmed": false` attribute in the registration hook.
+You can change this behavior by returning `"isEmailConfirmed": false` attribute in the registration hook.
 
 An admin user is used internally to call the REST API that creates new Flarum users.
 By default, user with ID `1` will be used but this can be customized in the admin settings.
