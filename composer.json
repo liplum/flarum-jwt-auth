@@ -1,6 +1,6 @@
 {
     "name": "liplum/flarum-jwt-auth",
-    "description": "Stateless login for Flarum through JWT cookie",
+    "description": "Authentication based on JSON Web Token (JWT) token through HTTP request cookie.",
     "version": "0.1",
     "keywords": [
         "flarum",
@@ -32,7 +32,7 @@
     },
     "extra": {
         "flarum-extension": {
-            "title": "JWT Cookie Login",
+            "title": "JWT Auth",
             "category": "feature",
             "icon": {
                 "name": "fas fa-cookie",
