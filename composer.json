@@ -35,7 +35,7 @@
   "extra": {
     "flarum-extension": {
       "title": "JWT Auth",
-      "category": "authentication",
+      "category": "feature",
       "icon": {
         "name": "fas fa-cookie",
         "backgroundColor": "#7b0004",
