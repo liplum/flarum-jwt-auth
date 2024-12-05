@@ -31,9 +31,9 @@ liplum-jwt-auth:
     registrationHookHelp: >
       A fully qualified URL that will be hit with a POST request when a user visits the forum for the first time.
       The request should return a JSON:API payload that will be used to create the new user in Flarum.
-      Read the documentation at https://github.com/liplum/flarum-jwt-auth?tab=readme-ov-file#5-set-the-registration-hook-url to learn more.
-    authorizationHeader: Custom Authorization header value
-    authorizationHeaderHelp: If this field is left empty, <code>Authorization</code> header will contain <code>Token <JWT token></code>.
+      Please read the <a href="https://github.com/liplum/flarum-jwt-auth?tab=readme-ov-file#5-set-the-registration-hook-url">documentation</a> to learn more.
+    authorizationHeader: Authorization Header
+    authorizationHeaderHelp: If this field is left empty, <code>Authorization</code> header will contain <code>"Token <JWT token>"</code>.
     hiddenIframe: Hidden Iframe URL
     hiddenIframeHelp: >
       This iframe will be loaded off-screen on all pages of the Flarum single page application.
