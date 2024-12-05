@@ -66,7 +66,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
     $jwt = $cookie->getValue();
 
     if (empty($jwt)) {
-      $this->logInDebugMode("No JWT cookie of $cookieName");
+      $this->debugLog("No JWT cookie of $cookieName");
       return null;
     }
 
@@ -82,28 +82,28 @@ class AuthenticateWithJWT implements MiddlewareInterface
         $algorithm === null || trim($algorithm) === "" ? "HS256" : $algorithm,
       );
     } else {
-      $this->logInDebugMode('Missing JWT secret');
+      $this->debugLog('Missing JWT secret');
       return null;
     }
 
     try {
       $payload = JWT::decode($jwt, $key);
     } catch (\Exception $exception) {
-      $this->logInDebugMode('Invalid JWT cookie');
+      $this->debugLog('Invalid JWT cookie');
       return null;
     }
 
     $audience = $this->getSettings('liplum-jwt-auth.audience');
 
     if ($audience && (!isset($payload->aud) || $payload->aud !== $audience)) {
-      $this->logInDebugMode('Invalid JWT audience (' . ($payload->aud ?? 'missing') . ')');
+      $this->debugLog('Invalid JWT audience (' . ($payload->aud ?? 'missing') . ')');
       return null;
     }
     $sub = $payload->sub;
 
     $user = User::query()->where('jwt_subject', $sub)->first();
     if ($user) {
-      $this->logInDebugMode('Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
+      $this->debugLog('Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
       return $user;
     }
 
@@ -116,7 +116,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
         $username = Arr::get($userAttributes, "attributes.username");
         $user = User::query()->where('username', $username)->first();
         if ($user) {
-          $this->logInDebugMode("Fallback to $identityFallback: " . 'Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
+          $this->debugLog("Fallback to $identityFallback: " . 'Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
           $user->jwt_subject = $payload->sub;
           $user->save();
           return $user;
@@ -126,7 +126,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
         $email = Arr::get($userAttributes, "attributes.email");
         $user = User::query()->where('email', $email)->first();
         if ($user) {
-          $this->logInDebugMode("Fallback to $identityFallback: " . 'Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
+          $this->debugLog("Fallback to $identityFallback: " . 'Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
           $user->jwt_subject = $payload->sub;
           $user->save();
           return $user;
@@ -146,7 +146,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
     $actor = User::query()->where('id', $this->getSettings('liplum-jwt-auth.actorId') ?: 1)->firstOrFail();
 
-    $this->logInDebugMode("Performing internal request to POST /api/users with data:" . PHP_EOL . json_encode($registerPayload, JSON_PRETTY_PRINT));
+    $this->debugLog("Performing internal request to POST /api/users with data:" . PHP_EOL . json_encode($registerPayload, JSON_PRETTY_PRINT));
 
     /**
      * @var $bus Dispatcher
@@ -159,7 +159,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
     $user->jwt_subject = $payload->sub;
     $user->save();
 
-    $this->logInDebugMode('Authenticating new JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
+    $this->debugLog('Authenticating new JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
 
     return $user;
   }
@@ -175,7 +175,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
     }, $string);
   }
 
-  protected function logInDebugMode(string $message)
+  protected function debugLog(string $message)
   {
     if ($this->config->inDebugMode()) {
       /**
@@ -212,7 +212,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
     $responseBody = $response->getBody()->getContents();
 
-    $this->logInDebugMode("Response of POST $registrationHook:" . PHP_EOL . $responseBody);
+    $this->debugLog("Response of POST $registrationHook:" . PHP_EOL . $responseBody);
 
     return Arr::get(Utils::jsonDecode($responseBody, true), 'data', []);
   }
