@@ -92,13 +92,16 @@ These attributes will be passed internally to [POST Flarum "/api/users"](https:/
 }
 ```
 
+By default, all accounts will be automatically enabled.
+You can change this behavior by returning `"isEmailConfirmed": false` attributes in the registration hook.
+
 ### 6. Set the Authorization Header
 
 It's optional.
 
 If the field is left empty, the `Authorization` header will be "Token {jwt}".
 
-Otherwise, the field will be sent as `Authorization` header without any modification.
+Otherwise, the field will be directly sent as `Authorization` header without any modification.
 
 Here is something like the evaluation process:
 
@@ -201,30 +204,27 @@ Code example for the iframe:
 ```js
 window.parent.postMessage({
   jwtSessionState: 'login',
-}, 'https://myforum.mydomain.tld');
+}, 'https://forum.example.com');
 ```
 
 The last parameter should be set to the Flarum `origin`.
 `'*'` can also be used but isn't recommended.
 
-## Under the hood
-
-Users are matched through the `jwt_subject` column in the database that is matched to the token's `sub` value.
-
-It will contain `Token <JWT token>` by default, but can be customized to a hard-coded secret token via the admin settings.
-The custom header setting will be applied verbatim as the header value, without any added prefix (i.e., `Token` is not added).
-
-Users can be edited via their JWT subject ID by using the `PATCH /api/jwt/users/<sub>` endpoint.
-It works exactly the same way as `PATCH /api/users/<id>` but takes the JWT subject ID instead of Flarum ID.
-
-By default, all accounts will be automatically enabled.
-You can change this behavior by returning `"isEmailConfirmed": false` attribute in the registration hook.
+## Additional Reading
 
 An admin user is used internally to call the REST API that creates new Flarum users.
 By default, user with ID `1` will be used but this can be customized in the admin settings.
 The value must be the Flarum ID (MySQL auto-increment) and not the JWT subject ID.
 
+Users can be edited via their JWT subject ID by using the `PATCH /api/jwt/users/<sub>` endpoint.
+It works exactly the same way as `PATCH /api/users/<id>` but takes the JWT subject ID instead of Flarum ID.
+
+## Under the hood
+
+Users are matched through the `jwt_subject` column in the database that is matched to the token's `sub` value.
+
 The original Flarum session object (Symfony session) and cookie are not used for stateless authentication, however the cookie session is kept because Flarum and some extensions cannot work without it.
+
 This session object is not invalidated during "login" and "logout" of the stateless JWT authentication, so there could be issues with extensions that rely on that object for other purposes than validation messages.
 
 ## Acknowledgement
