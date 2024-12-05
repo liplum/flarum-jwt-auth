@@ -34,7 +34,7 @@ The JWT payload should be something like this.
 }
 ```
 
-For security issue, you can set the JWT secret in the [config.php](https://docs.flarum.org/config/)
+For security issue, you should set the JWT secret in the [config.php](https://docs.flarum.org/config/)
 instead of barely display on extension settings page for anyone who has the extension management permission.
 
 ```php
@@ -112,6 +112,19 @@ if (settings.of("AuthorizationHeader").isNotEmpty) {
 } else {
   return `Token ${jwt}` // string interpolation
 }
+```
+
+For security issue, you should set the JWT secret in the [config.php](https://docs.flarum.org/config/)
+instead of barely display on extension settings page for anyone who has the extension management permission.
+
+```php
+<?php return array (
+  'debug' => false,
+  // other configurations...
+  "liplum-jwt-auth" => array(
+    "authorizationHeader" => "Bearer your_access_token"
+  ),
+);
 ```
 
 ## Backend Setup

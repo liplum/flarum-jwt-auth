@@ -15,11 +15,13 @@ liplum-jwt-auth:
     audienceHelp: Validates the <code>aud</code> attribute of the token.
     jwtSecret: JWT Secret
     jwtSecretHelp: |
-      For security issue, you can set this in your "config.php" like below:
+      For security issue, you should set this in your "config.php" like below:
 
+      <code>
       "liplum-jwt-auth" => array(
           "jwtSecret" => "access_token_secret"
       )
+      </code>
     jwtSignAlgorithm: JWT Signing Algorithm
     jwtSignAlgorithmHelp: '"HS256" by default.'
     expirationLeeway: Expiration Leeway (seconds)
@@ -33,7 +35,16 @@ liplum-jwt-auth:
       The request should return a JSON:API payload that will be used to create the new user in Flarum.
       Please read the documentation: https://github.com/liplum/flarum-jwt-auth?tab=readme-ov-file#5-set-the-registration-hook-url.
     authorizationHeader: Authorization Header
-    authorizationHeaderHelp: If this field is left empty, <code>Authorization</code> header will contain <code>"Token <JWT token>"</code>.
+    authorizationHeaderHelp: |
+      If this field is left empty, <code>Authorization</code> header will contain <code>"Token <JWT token>"</code>.
+
+      For security issue, you should set this in your "config.php" like below:
+
+      <code>
+      "liplum-jwt-auth" => array(
+          "jwtSecret" => "access_token_secret"
+      )
+      </code>
     hiddenIframe: Hidden Iframe URL
     hiddenIframeHelp: >
       This iframe will be loaded off-screen on all pages of the Flarum single page application.
