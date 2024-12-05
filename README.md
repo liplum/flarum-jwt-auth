@@ -19,6 +19,9 @@ Set the name of [cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cooki
 
 It's optional.
 
+The extension will check if the `aud` field in JWT payload is identical to the JWT audience provided by admin settings.
+If not, the JWT will be considered as invalid.
+
 ### 3. Set the JWT secret
 
 The secret to sign(encode) and verify(decode) a JWT token.
@@ -56,7 +59,8 @@ The hook which will be called for new Flarum users.
 
 The payload of the hook request is in [JSON:API](https://jsonapi.org/) which Flarum uses,
 and the authentication can be checked via the `Authorization` header.
-for example:
+
+Here is something like the Flarum backend would request the hook:
 
 ```js
 fetch(registrationHookUrl, {
@@ -85,6 +89,25 @@ These attributes will be passed internally to [POST Flarum "/api/users"](https:/
       "email": "example@example.com"
     }
   }
+}
+```
+
+### 6. Set the Authorization Header
+
+It's optional.
+
+If the field is left empty, the `Authorization` header will be "Token {jwt}".
+
+Otherwise, the field will be sent as `Authorization` header without any modification.
+
+Here is something like the evaluation process:
+
+```js
+const jwt = cookie.get("CookieName")
+if (settings.of("AuthorizationHeader").isNotEmpty) {
+  return settings.of("AuthorizationHeader")
+} else {
+  return `Token ${jwt}` // string interpolation
 }
 ```
 
@@ -128,7 +151,9 @@ interface VerifyResult {
 }
 
 app.post("/register", (req, res) => {
-  if (req.headers["authorization"] !== "Bearer your_access_token") {
+  const authHeader = req.headers["authorization"]
+  // for custom Authorization header or `Token ${jwt}`
+  if (authHeader !== "Bearer your_access_token" && !authHeader.startsWith("Token ")) {
     return res.status(401).end()
   }
   const sub = req.body.sub
