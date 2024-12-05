@@ -21,8 +21,10 @@ return [
 
     (new Extend\Middleware('forum'))
         ->insertAfter(AuthenticateWithSession::class, AuthenticateWithJWT::class),
+
     (new Extend\Middleware('admin'))
         ->insertAfter(AuthenticateWithSession::class, AuthenticateWithJWT::class),
+
     (new Extend\Middleware('api'))
         ->insertAfter(AuthenticateWithSession::class, AuthenticateWithJWT::class),
 
