@@ -25,6 +25,7 @@
     }
   ],
   "support": {
+    "issues": "https://github.com/liplum/flarum-jwt-auth/issues",
     "source": "https://github.com/liplum/flarum-jwt-auth"
   },
   "autoload": {
