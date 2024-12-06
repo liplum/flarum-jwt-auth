@@ -207,7 +207,10 @@ class AuthenticateWithJWT implements MiddlewareInterface
         ],
         'json' => [
           "data" => [
-            'sub' => $sub,
+            'type' => 'users',
+            'attributes' => [
+              'sub' => $sub,
+            ],
           ]
         ],
       ]);

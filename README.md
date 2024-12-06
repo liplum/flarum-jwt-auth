@@ -71,7 +71,10 @@ fetch(registrationHookUrl, {
   },
   body: JSON.stringify({
     "data": {
-      "sub": "your_user_id"
+      "type": "users",
+      "attributes": {
+        "sub": "your_user_id"
+      }
     }
   })
 })
@@ -172,7 +175,7 @@ app.post("/register", (req, res) => {
   if (authHeader !== "Bearer your_access_token" && !authHeader.startsWith("Token ")) {
     return res.status(401).end()
   }
-  const sub = req.body.sub
+  const sub = req.body.attributes.sub
   // Complete this: check the sub (generally the user ID) in the database.
   return res.status(200).json({
     data: {

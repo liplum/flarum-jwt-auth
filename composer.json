@@ -1,7 +1,7 @@
 {
   "name": "liplum/flarum-jwt-auth",
   "description": "Authentication based on JSON Web Token (JWT) token through HTTP request cookie.",
-  "version": "0.1",
+  "version": "0.2",
   "keywords": [
     "flarum",
     "flarum-extension",
