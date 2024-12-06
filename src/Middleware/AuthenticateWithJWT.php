@@ -149,7 +149,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
     $this->debugLog("Performing internal request to POST /api/users with data:" . PHP_EOL . json_encode($registerPayload, JSON_PRETTY_PRINT));
 
     /**
-     * @var $bus Dispatcher
+     * @var Dispatcher $bus
      */
     $bus = resolve(Dispatcher::class);
 
@@ -179,7 +179,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
   {
     if ($this->config->inDebugMode()) {
       /**
-       * @var $logger LoggerInterface
+       * @var LoggerInterface
        */
       $logger = resolve(LoggerInterface::class);
       $logger->info($message);
@@ -200,7 +200,6 @@ class AuthenticateWithJWT implements MiddlewareInterface
     $authorization = $this->getSettings('liplum-jwt-auth.authorizationHeader');
 
     try {
-
       $response = $this->client->post($registrationHook, [
         'headers' => [
           'Authorization' => $authorization ?: ('Token ' . $jwt),
@@ -215,11 +214,11 @@ class AuthenticateWithJWT implements MiddlewareInterface
         ],
       ]);
 
-      $responseBody = $response->getBody()->getContents();
+      $body = Utils::jsonDecode($response->getBody()->getContents(), true);
 
-      $this->debugLog("Response of POST $registrationHook:" . PHP_EOL . $responseBody);
+      $this->debugLog("Response of POST $registrationHook:" . PHP_EOL . $body);
 
-      return Arr::get(Utils::jsonDecode($responseBody, true), 'data', []);
+      return Arr::get($body, 'data', []);
     } catch (\Exception $e) {
       $this->debugLog("$e");
       return null;
