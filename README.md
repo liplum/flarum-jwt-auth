@@ -87,6 +87,7 @@ These attributes will be passed internally to [POST Flarum "/api/users"](https:/
 ```json
 {
   "data": {
+    "type": "users",
     "attributes": {
       "username": "example",
       "email": "example@example.com"
@@ -157,6 +158,7 @@ app.post("/set-cookie", (req, res) => {
 // if the plain javascript is used instead of typescript.
 interface VerifyResult {
   data: {
+    type: "users",
     attributes: {
       username: string
       email: string
