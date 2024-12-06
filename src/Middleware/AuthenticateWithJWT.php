@@ -199,21 +199,27 @@ class AuthenticateWithJWT implements MiddlewareInterface
     }
     $authorization = $this->getSettings('liplum-jwt-auth.authorizationHeader');
 
-    $response = $this->client->post($registrationHook, [
-      'headers' => [
-        'Authorization' => $authorization ?: ('Token ' . $jwt),
-      ],
-      'json' => [
-        "data" => [
-          'sub' => $sub,
-        ]
-      ],
-    ]);
+    try {
 
-    $responseBody = $response->getBody()->getContents();
+      $response = $this->client->post($registrationHook, [
+        'headers' => [
+          'Authorization' => $authorization ?: ('Token ' . $jwt),
+        ],
+        'json' => [
+          "data" => [
+            'sub' => $sub,
+          ]
+        ],
+      ]);
 
-    $this->debugLog("Response of POST $registrationHook:" . PHP_EOL . $responseBody);
+      $responseBody = $response->getBody()->getContents();
 
-    return Arr::get(Utils::jsonDecode($responseBody, true), 'data', []);
+      $this->debugLog("Response of POST $registrationHook:" . PHP_EOL . $responseBody);
+
+      return Arr::get(Utils::jsonDecode($responseBody, true), 'data', []);
+    } catch (\Exception $e) {
+      $this->debugLog("$e");
+      return null;
+    }
   }
 }
