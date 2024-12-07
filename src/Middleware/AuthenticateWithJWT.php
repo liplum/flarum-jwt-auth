@@ -28,13 +28,20 @@ class AuthenticateWithJWT implements MiddlewareInterface
   protected $cache;
   protected $client;
   protected $config;
+  private $log;
 
-  public function __construct(SettingsRepositoryInterface $settings, Repository $cache, Client $client, Config $config)
-  {
+  public function __construct(
+    SettingsRepositoryInterface $settings,
+    Repository $cache,
+    Client $client,
+    Config $config,
+    LoggerInterface $log,
+  ) {
     $this->settings = $settings;
     $this->cache = $cache;
     $this->client = $client;
     $this->config = $config;
+    $this->log = $log;
   }
 
   public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -66,7 +73,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
     $jwt = $cookie->getValue();
 
     if (empty($jwt)) {
-      $this->debugLog("No JWT cookie of $cookieName");
+      $this->log->debug("No JWT cookie of $cookieName");
       return null;
     }
 
@@ -82,28 +89,28 @@ class AuthenticateWithJWT implements MiddlewareInterface
         $algorithm === null || trim($algorithm) === "" ? "HS256" : $algorithm,
       );
     } else {
-      $this->debugLog('Missing JWT secret');
+      $this->log->debug('Missing JWT secret');
       return null;
     }
 
     try {
       $payload = JWT::decode($jwt, $key);
     } catch (\Exception $exception) {
-      $this->debugLog('Invalid JWT cookie');
+      $this->log->debug('Invalid JWT cookie');
       return null;
     }
 
     $audience = $this->getSettings('liplum-jwt-auth.audience');
 
     if ($audience && (!isset($payload->aud) || $payload->aud !== $audience)) {
-      $this->debugLog('Invalid JWT audience (' . ($payload->aud ?? 'missing') . ')');
+      $this->log->debug('Invalid JWT audience (' . ($payload->aud ?? 'missing') . ')');
       return null;
     }
     $sub = $payload->sub;
 
     $user = User::query()->where('jwt_subject', $sub)->first();
     if ($user) {
-      $this->debugLog('Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
+      $this->log->debug('Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
       return $user;
     }
 
@@ -116,7 +123,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
         $username = Arr::get($userAttributes, "attributes.username");
         $user = User::query()->where('username', $username)->first();
         if ($user) {
-          $this->debugLog("Fallback to $identityFallback: " . 'Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
+          $this->log->debug("Fallback to $identityFallback: " . 'Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
           $user->jwt_subject = $payload->sub;
           $user->save();
           return $user;
@@ -126,7 +133,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
         $email = Arr::get($userAttributes, "attributes.email");
         $user = User::query()->where('email', $email)->first();
         if ($user) {
-          $this->debugLog("Fallback to $identityFallback: " . 'Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
+          $this->log->debug("Fallback to $identityFallback: " . 'Authenticating existing JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
           $user->jwt_subject = $payload->sub;
           $user->save();
           return $user;
@@ -146,7 +153,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
     $actor = User::query()->where('id', $this->getSettings('liplum-jwt-auth.actorId') ?: 1)->firstOrFail();
 
-    $this->debugLog("Performing internal request to POST /api/users with data:" . PHP_EOL . json_encode($registerPayload, JSON_PRETTY_PRINT));
+    $this->log->debug("Performing internal request to POST /api/users with data:" . PHP_EOL . json_encode($registerPayload, JSON_PRETTY_PRINT));
 
     /**
      * @var Dispatcher $bus
@@ -159,7 +166,7 @@ class AuthenticateWithJWT implements MiddlewareInterface
     $user->jwt_subject = $payload->sub;
     $user->save();
 
-    $this->debugLog('Authenticating new JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
+    $this->log->debug('Authenticating new JWT user [' . $user->jwt_subject . ' / ' . $user->id . ']');
 
     return $user;
   }
@@ -173,17 +180,6 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
       return $payload->{$matches[1]};
     }, $string);
-  }
-
-  protected function debugLog(string $message)
-  {
-    if ($this->config->inDebugMode()) {
-      /**
-       * @var LoggerInterface
-       */
-      $logger = resolve(LoggerInterface::class);
-      $logger->info($message);
-    }
   }
 
   private function getSettings(string $key)
@@ -216,11 +212,11 @@ class AuthenticateWithJWT implements MiddlewareInterface
 
       $body = Utils::jsonDecode($response->getBody()->getContents(), true);
 
-      $this->debugLog("Response of POST $registrationHook:" . PHP_EOL . $body);
+      $this->log->debug("Response of POST $registrationHook:" . PHP_EOL . $body);
 
       return Arr::get($body, 'data', []);
     } catch (\Exception $e) {
-      $this->debugLog("$e");
+      $this->log->debug("$e");
       return null;
     }
   }
