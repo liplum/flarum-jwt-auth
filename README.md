@@ -118,7 +118,7 @@ if (settings.of("AuthorizationHeader").isNotEmpty) {
 }
 ```
 
-For security issue, you should set the JWT secret in the [config.php](https://docs.flarum.org/config/)
+For security issue, you should set the Authorization header in the [config.php](https://docs.flarum.org/config/)
 instead of barely display on extension settings page for anyone who has the extension management permission.
 
 ```php

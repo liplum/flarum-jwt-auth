@@ -51,7 +51,7 @@ liplum-jwt-auth:
 
         <code>
         "liplum-jwt-auth" => array(
-            "jwtSecret" => "access_token_secret"
+            "authorizationHeader" => "access_token_secret"
         )
         </code>
     hiddenIframe:
