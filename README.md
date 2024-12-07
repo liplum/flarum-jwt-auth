@@ -174,13 +174,17 @@ interface VerifyResult {
 app.post("/register", (req, res) => {
   const authHeader = req.headers["authorization"]
   // for custom Authorization header or `Token ${jwt}`
-  if (authHeader !== "Bearer your_access_token" && !authHeader.startsWith("Token ")) {
+  if (!authHeader
+    || authHeader !== "Bearer your_access_token"
+    && !authHeader.startsWith("Token ")
+  ) {
     return res.status(401).end()
   }
   const sub = req.body.attributes.sub
   // Complete this: check the sub (generally the user ID) in the database.
   return res.status(200).json({
     data: {
+      type: "users",
       attributes: {
         // Edit this: Keep it following flarum's username rule.
         username: `name_of_${sub}`,
