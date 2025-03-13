@@ -1,9 +1,19 @@
 # Flarum JSON Web Token Auth
 
-## Installation
+A [Flarum](http://flarum.org) extension to authenticate based on JSON Web Token (JWT) token through HTTP request cookie.
+
+## Get Started
+
+Installation:
 
 ```bash
 composer require liplum/flarum-jwt-auth
+```
+
+Update:
+
+```sh
+composer update liplum/flarum-jwt-auth
 ```
 
 ## Forum Setup
