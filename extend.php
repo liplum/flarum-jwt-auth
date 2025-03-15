@@ -14,7 +14,7 @@ return [
     (new Extend\Frontend('admin'))
         ->js(__DIR__ . '/js/dist/admin.js'),
 
-    new Extend\Locales(__DIR__ . '/resources/locale'),
+    new Extend\Locales(__DIR__ . '/locale'),
 
     (new Extend\Routes('api'))
         ->patch('/jwt/users/{id}', 'liplum-jwt-auth.users.update', Controller\EditUserController::class),
